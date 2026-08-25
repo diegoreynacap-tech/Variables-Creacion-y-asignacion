@@ -1,0 +1,1173 @@
+<!DOCTYPE html>
+<!-- saved from url=(0033)https://dw-juego-mod-1.pages.dev/ -->
+<html lang="es"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>EXPEDIENTE R.A.Í.Z. · SHANUKI DW · Entrega 1: HTML</title>
+<link rel="preconnect" href="https://fonts.googleapis.com/">
+<link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin="">
+<link href="./EXPEDIENTE R.A.Í.Z. · SHANUKI DW · Entrega 1_ HTML_files/css2" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.2/dist/jspdf.umd.min.js"></script>
+<style>
+* { margin:0; padding:0; box-sizing:border-box; }
+html { scroll-behavior:smooth; }
+body {
+  font-family:'Rajdhani',sans-serif;
+  background:rgb(7,9,14);
+  color:rgb(220,226,238);
+  min-height:100vh;
+  background-image:
+    radial-gradient(ellipse at 20% 0%, rgba(220,38,38,0.07), transparent 55%),
+    radial-gradient(ellipse at 80% 100%, rgba(34,211,238,0.06), transparent 55%);
+  font-size:17px;
+}
+/* ===== SCANLINES ===== */
+body::before {
+  content:''; position:fixed; inset:0; pointer-events:none; z-index:9999;
+  background:repeating-linear-gradient(0deg, rgba(0,0,0,0.10) 0px, rgba(0,0,0,0.10) 1px, transparent 1px, transparent 3px);
+  opacity:.35;
+}
+/* ===== HEADER ===== */
+header {
+  position:sticky; top:0; z-index:100;
+  background:rgba(10,12,18,0.92);
+  border-bottom:1px solid rgb(40,48,66);
+  backdrop-filter:blur(8px);
+  padding:10px 18px;
+  display:flex; align-items:center; gap:14px; flex-wrap:wrap;
+}
+.logo { font-family:'Orbitron',sans-serif; font-weight:900; font-size:1.05rem; letter-spacing:2px; color:rgb(34,211,238); text-shadow:0 0 12px rgba(34,211,238,0.55); white-space:nowrap; }
+.logo span { color:rgb(239,68,68); text-shadow:0 0 12px rgba(239,68,68,0.6); }
+.hud { display:flex; gap:10px; align-items:center; margin-left:auto; flex-wrap:wrap; }
+.hud-chip {
+  font-family:'Courier Prime',monospace; font-size:.8rem;
+  border:1px solid rgb(45,55,75); border-radius:6px; padding:4px 10px;
+  background:rgb(13,16,24); color:rgb(160,175,200); white-space:nowrap;
+}
+.hud-chip b { color:rgb(134,239,110); }
+#chipAgente b { color:rgb(34,211,238); }
+.btn-mini {
+  font-family:'Rajdhani',sans-serif; font-weight:700; font-size:.85rem;
+  background:rgb(17,21,31); color:rgb(200,210,228);
+  border:1px solid rgb(50,60,84); border-radius:6px;
+  padding:6px 12px; cursor:pointer; letter-spacing:1px;
+  transition:all .2s;
+}
+.btn-mini:hover { border-color:rgb(34,211,238); color:rgb(34,211,238); box-shadow:0 0 10px rgba(34,211,238,0.25); }
+.btn-mini.btn-reset { border-color:rgba(239,68,68,0.5); color:rgb(239,68,68); }
+.btn-mini.btn-reset:hover { border-color:rgb(239,68,68); color:rgb(255,255,255); background:rgb(220,38,38); box-shadow:0 0 10px rgba(220,38,38,0.35); }
+/* ===== PANTALLAS ===== */
+.pantalla { display:none; max-width:1060px; margin:0 auto; padding:26px 18px 90px; }
+.pantalla.activa { display:block; animation:apar .35s ease; }
+@keyframes apar { from { opacity:0; transform:translateY(10px);} to { opacity:1; transform:none;} }
+/* ===== INICIO ===== */
+.titulo-juego {
+  font-family:'Orbitron',sans-serif; font-weight:900; text-align:center;
+  font-size:clamp(1.7rem,5.5vw,3.2rem); letter-spacing:4px; margin:30px 0 6px;
+  color:rgb(239,68,68); text-shadow:0 0 22px rgba(239,68,68,0.65), 0 0 60px rgba(239,68,68,0.3);
+  animation:parpadeoTit 3.5s infinite;
+}
+@keyframes parpadeoTit { 0%,92%,96%,100% { opacity:1;} 94% { opacity:.55;} }
+.subtitulo-juego { text-align:center; font-family:'Courier Prime',monospace; color:rgb(134,239,110); font-size:1rem; letter-spacing:2px; margin-bottom:26px; }
+.tarjeta {
+  background:rgb(13,16,24); border:1px solid rgb(40,48,66); border-radius:12px;
+  padding:22px 24px; margin:18px auto; max-width:720px;
+  box-shadow:0 10px 40px rgba(0,0,0,0.5);
+}
+.tarjeta h2 { font-family:'Orbitron',sans-serif; font-size:1rem; letter-spacing:2px; color:rgb(34,211,238); margin-bottom:12px; }
+.terminal {
+  font-family:'Courier Prime',monospace; font-size:.88rem; line-height:1.7;
+  background:rgb(5,7,10); border:1px solid rgb(30,38,54); border-left:3px solid rgb(239,68,68);
+  border-radius:8px; padding:15px 18px; color:rgb(178,188,206); margin:14px 0;
+  white-space:pre-wrap;
+}
+.terminal .ok { color:rgb(134,239,110); }
+.terminal .warn { color:rgb(250,204,21); }
+.terminal .err { color:rgb(248,113,113); }
+.terminal .sys { color:rgb(103,232,249); }
+.campo { display:flex; flex-direction:column; gap:6px; margin:14px 0; }
+.campo label { font-weight:700; letter-spacing:1px; color:rgb(160,175,200); font-size:.9rem; }
+.campo input {
+  font-family:'Courier Prime',monospace; font-size:1rem;
+  background:rgb(5,7,10); color:rgb(220,226,238);
+  border:1px solid rgb(50,60,84); border-radius:8px; padding:11px 14px;
+  outline:none; transition:border .2s;
+}
+.campo input:focus { border-color:rgb(34,211,238); box-shadow:0 0 12px rgba(34,211,238,0.2); }
+.btn-primario {
+  display:inline-block; font-family:'Orbitron',sans-serif; font-weight:700;
+  font-size:.95rem; letter-spacing:2px; text-transform:uppercase;
+  background:linear-gradient(135deg, rgb(190,24,60), rgb(220,38,38));
+  color:rgb(255,241,242); border:none; border-radius:8px;
+  padding:13px 28px; cursor:pointer; transition:all .2s;
+  box-shadow:0 0 18px rgba(220,38,38,0.4);
+}
+.btn-primario:hover { transform:translateY(-2px); box-shadow:0 0 30px rgba(220,38,38,0.65); }
+.btn-secundario {
+  font-family:'Rajdhani',sans-serif; font-weight:700; font-size:.95rem; letter-spacing:1px;
+  background:transparent; color:rgb(103,232,249);
+  border:1px solid rgb(34,211,238); border-radius:8px;
+  padding:11px 20px; cursor:pointer; transition:all .2s;
+}
+.btn-secundario:hover { background:rgba(34,211,238,0.1); box-shadow:0 0 14px rgba(34,211,238,0.3); }
+.fila-botones { display:flex; gap:12px; flex-wrap:wrap; margin-top:16px; align-items:center; }
+.msj-codigo { font-family:'Courier Prime',monospace; font-size:.88rem; margin-top:8px; min-height:22px; }
+.msj-codigo.ok { color:rgb(134,239,110); }
+.msj-codigo.err { color:rgb(248,113,113); }
+/* ===== MAPA ===== */
+.mapa-titulo { font-family:'Orbitron',sans-serif; letter-spacing:3px; font-size:1.25rem; color:rgb(34,211,238); text-align:center; margin:8px 0 4px; }
+.mapa-sub { text-align:center; color:rgb(140,152,175); font-family:'Courier Prime',monospace; font-size:.85rem; margin-bottom:22px; }
+.barra-inf { max-width:680px; margin:0 auto 26px; }
+.barra-inf .pista { height:10px; border-radius:6px; background:rgb(20,25,36); border:1px solid rgb(40,48,66); overflow:hidden; }
+.barra-inf .relleno { height:100%; width:0%; background:linear-gradient(90deg, rgb(220,38,38), rgb(250,204,21), rgb(134,239,110)); transition:width .6s ease; }
+.barra-inf .texto { font-family:'Courier Prime',monospace; font-size:.8rem; color:rgb(140,152,175); text-align:right; margin-top:5px; }
+.grid-zonas { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:16px; }
+.zona {
+  background:rgb(13,16,24); border:1px solid rgb(40,48,66); border-radius:12px;
+  padding:18px; cursor:pointer; transition:all .25s; position:relative; overflow:hidden;
+}
+.zona::after { content:''; position:absolute; top:0; left:0; right:0; height:3px; background:rgb(50,60,84); }
+.zona:hover { transform:translateY(-3px); border-color:rgb(34,211,238); box-shadow:0 8px 24px rgba(34,211,238,0.15); }
+.zona .z-num { font-family:'Courier Prime',monospace; font-size:.75rem; color:rgb(140,152,175); letter-spacing:2px; }
+.zona h3 { font-family:'Orbitron',sans-serif; font-size:.98rem; letter-spacing:1px; color:rgb(220,226,238); margin:6px 0 8px; }
+.zona .z-tema { font-size:.92rem; color:rgb(160,175,200); }
+.zona .z-estado { margin-top:12px; font-family:'Courier Prime',monospace; font-size:.8rem; letter-spacing:1px; }
+.zona.completa::after { background:rgb(134,239,110); }
+.zona.completa .z-estado { color:rgb(134,239,110); }
+.zona.disponible::after { background:rgb(250,204,21); }
+.zona.disponible .z-estado { color:rgb(250,204,21); }
+.zona.bloqueada { opacity:.45; cursor:not-allowed; filter:grayscale(.6); }
+.zona.bloqueada:hover { transform:none; border-color:rgb(40,48,66); box-shadow:none; }
+.zona.bloqueada .z-estado { color:rgb(248,113,113); }
+.zona.insana { border-color:rgb(127,29,29); background:linear-gradient(160deg, rgb(20,10,12), rgb(13,16,24)); }
+.zona.insana::after { background:linear-gradient(90deg, rgb(220,38,38), rgb(127,29,29)); }
+.zona.insana h3 { color:rgb(248,113,113); text-shadow:0 0 10px rgba(239,68,68,0.5); }
+.zona.insana.disponible .z-estado { color:rgb(248,113,113); }
+</style>
+<style>
+/* ===== NIVEL ===== */
+.nivel-cab { display:flex; align-items:center; gap:12px; flex-wrap:wrap; margin-bottom:14px; }
+.nivel-cab h2 { font-family:'Orbitron',sans-serif; font-size:1.15rem; letter-spacing:2px; color:rgb(34,211,238); }
+.tag-xp { font-family:'Courier Prime',monospace; font-size:.8rem; color:rgb(250,204,21); border:1px solid rgb(113,88,15); border-radius:6px; padding:3px 9px; background:rgba(250,204,21,0.07); }
+.teoria-caja { background:rgb(13,16,24); border:1px solid rgb(40,48,66); border-radius:14px; margin:16px 0; overflow:hidden; }
+.teoria-cab { display:flex; align-items:center; gap:10px; padding:15px 20px; cursor:pointer; user-select:none; transition:background .2s; }
+.teoria-cab:hover { background:rgba(134,239,110,0.05); }
+.teoria-cab .ico { font-size:1.1rem; }
+.teoria-cab .tit { font-family:'Orbitron',sans-serif; font-size:.82rem; letter-spacing:2px; color:rgb(134,239,110); flex:1; }
+.teoria-cab .flecha { color:rgb(140,152,175); font-size:.85rem; transition:transform .3s; }
+.teoria-caja.abierta .teoria-cab .flecha { transform:rotate(180deg); }
+.teoria-cuerpo { max-height:0; overflow:hidden; transition:max-height .4s ease; }
+.teoria-caja.abierta .teoria-cuerpo { max-height:2600px; }
+.teoria-inner { padding:4px 24px 22px; }
+.bloque-teoria { margin:0; }
+.bloque-teoria h3 { font-family:'Orbitron',sans-serif; font-size:.9rem; letter-spacing:1px; color:rgb(220,226,238); margin:14px 0 12px; padding-bottom:10px; border-bottom:1px solid rgb(30,38,54); }
+.bloque-teoria p { line-height:1.75; margin:13px 0; color:rgb(198,207,224); font-size:1rem; }
+.bloque-teoria code.inl { font-family:'Courier Prime',monospace; background:rgb(5,7,10); border:1px solid rgb(40,48,66); border-radius:5px; padding:1px 7px; color:rgb(103,232,249); font-size:.88em; }
+.destacado { border-left:3px solid rgb(250,204,21); background:rgba(250,204,21,0.05); border-radius:0 8px 8px 0; padding:13px 18px; margin:16px 0; line-height:1.7; font-size:.97rem; color:rgb(210,218,232); }
+/* Bloques de código resaltados */
+.cod {
+  font-family:'Courier Prime',monospace; font-size:.95rem; line-height:1.6;
+  background:rgb(30,30,30); border:1px solid rgb(50,58,78); border-radius:10px;
+  padding:14px 16px; margin:12px 0; overflow-x:auto; white-space:pre; tab-size:2;
+}
+/* Paleta VS Code Dark+ (tokenizador propio) */
+.tk-pun { color:rgb(128,128,128); }
+.tk-tag { color:rgb(86,156,214); }
+.tk-atr { color:rgb(156,220,254); }
+.tk-val { color:rgb(206,145,120); }
+.tk-com { color:rgb(106,153,85); font-style:italic; }
+.tk-doc { color:rgb(197,134,192); }
+.tk-txt { color:rgb(212,212,212); }
+/* ===== EDITOR ===== */
+.lab { background:rgb(13,16,24); border:1px solid rgb(40,48,66); border-radius:12px; padding:18px 20px; margin:16px 0; }
+.lab h3 { font-family:'Orbitron',sans-serif; font-size:.92rem; letter-spacing:2px; color:rgb(248,113,113); margin-bottom:10px; }
+.lab .consigna { line-height:1.7; margin-bottom:12px; color:rgb(205,213,228); }
+.lab .consigna li { margin:5px 0 5px 22px; }
+.editor-marco { position:relative; border:1px solid rgb(60,70,95); border-radius:10px; overflow:hidden; background:rgb(30,30,30); }
+.editor-barra { display:flex; align-items:center; gap:8px; padding:7px 12px; background:rgb(22,24,32); border-bottom:1px solid rgb(50,58,78); }
+.editor-barra .punto { width:11px; height:11px; border-radius:50%; }
+.editor-barra .p1 { background:rgb(248,113,113); } .editor-barra .p2 { background:rgb(250,204,21); } .editor-barra .p3 { background:rgb(134,239,110); }
+.editor-barra .nom { font-family:'Courier Prime',monospace; font-size:.78rem; color:rgb(140,152,175); margin-left:6px; }
+.editor-zona { position:relative; min-height:220px; }
+.editor-zona pre, .editor-zona textarea {
+  font-family:'Courier Prime',monospace; font-size:.95rem; line-height:1.6;
+  padding:14px 16px; margin:0; tab-size:2; white-space:pre-wrap; word-wrap:break-word;
+  min-height:220px; width:100%; border:none;
+}
+.editor-zona pre { position:absolute; inset:0; overflow:auto; pointer-events:none; color:rgb(212,212,212); }
+.editor-zona textarea {
+  position:relative; display:block; background:transparent; color:transparent;
+  caret-color:rgb(103,232,249); resize:vertical; outline:none; overflow:auto;
+}
+.editor-zona textarea::selection { background:rgba(34,211,238,0.25); }
+.fila-lab { display:flex; gap:10px; flex-wrap:wrap; margin-top:12px; }
+.btn-verificar {
+  font-family:'Orbitron',sans-serif; font-weight:700; font-size:.85rem; letter-spacing:2px;
+  background:linear-gradient(135deg, rgb(21,94,53), rgb(22,163,74)); color:rgb(240,253,244);
+  border:none; border-radius:8px; padding:11px 22px; cursor:pointer; transition:all .2s;
+}
+.btn-verificar:hover { box-shadow:0 0 18px rgba(34,197,94,0.5); transform:translateY(-1px); }
+.btn-preview {
+  font-family:'Rajdhani',sans-serif; font-weight:700; font-size:.9rem; letter-spacing:1px;
+  background:rgb(17,21,31); color:rgb(103,232,249);
+  border:1px solid rgb(34,211,238); border-radius:8px; padding:10px 18px; cursor:pointer; transition:all .2s;
+}
+.btn-preview:hover { background:rgba(34,211,238,0.1); }
+.chequeos { margin-top:14px; display:none; }
+.chequeos.vis { display:block; }
+.chk { font-family:'Courier Prime',monospace; font-size:.88rem; padding:7px 12px; border-radius:7px; margin:6px 0; border:1px solid rgb(40,48,66); background:rgb(5,7,10); line-height:1.5; }
+.chk.pasa { color:rgb(134,239,110); border-color:rgb(22,101,52); }
+.chk.falla { color:rgb(248,113,113); border-color:rgb(127,29,29); }
+.preview-marco { margin-top:14px; border:1px solid rgb(60,70,95); border-radius:10px; overflow:hidden; display:none; }
+.preview-marco.vis { display:block; }
+.preview-marco .pv-cab { font-family:'Courier Prime',monospace; font-size:.78rem; color:rgb(140,152,175); background:rgb(22,24,32); padding:6px 12px; border-bottom:1px solid rgb(50,58,78); }
+.preview-marco iframe { width:100%; height:260px; border:none; background:rgb(255,255,255); display:block; }
+.nav-nivel { display:flex; justify-content:space-between; gap:10px; margin-top:22px; flex-wrap:wrap; }
+/* ===== MODALES ===== */
+.velo { position:fixed; inset:0; background:rgba(3,4,7,0.85); z-index:500; display:none; align-items:center; justify-content:center; padding:20px; backdrop-filter:blur(4px); }
+.velo.vis { display:flex; animation:apar .3s ease; }
+.modal {
+  background:rgb(13,16,24); border:1px solid rgb(127,29,29); border-radius:14px;
+  max-width:560px; width:100%; padding:26px 28px; box-shadow:0 0 60px rgba(220,38,38,0.35);
+  max-height:88vh; overflow-y:auto;
+}
+.modal h2 { font-family:'Orbitron',sans-serif; font-size:1.1rem; letter-spacing:2px; color:rgb(248,113,113); margin-bottom:14px; text-shadow:0 0 12px rgba(239,68,68,0.5); }
+.modal p { line-height:1.7; margin:10px 0; color:rgb(205,213,228); }
+.modal.exito { border-color:rgb(22,101,52); box-shadow:0 0 60px rgba(34,197,94,0.3); }
+.modal.exito h2 { color:rgb(134,239,110); text-shadow:0 0 12px rgba(74,222,128,0.5); }
+.cod-contencion {
+  font-family:'Courier Prime',monospace; font-size:1.35rem; font-weight:700; letter-spacing:3px;
+  text-align:center; color:rgb(250,204,21); background:rgb(5,7,10);
+  border:1px dashed rgb(113,88,15); border-radius:10px; padding:14px; margin:14px 0;
+}
+/* Botón PDF flotante */
+#btnPdf {
+  position:fixed; bottom:22px; right:22px; z-index:300;
+  width:58px; height:58px; border-radius:50%;
+  background:linear-gradient(135deg, rgb(14,116,144), rgb(34,211,238));
+  border:none; font-size:1.5rem; cursor:pointer;
+  box-shadow:0 6px 24px rgba(34,211,238,0.45);
+  transition:all .2s; display:none;
+}
+#btnPdf.vis { display:block; }
+#btnPdf:hover { transform:scale(1.1); }
+footer { text-align:center; font-family:'Courier Prime',monospace; font-size:.78rem; color:rgb(110,122,146); padding:22px 10px 90px; }
+/* ===== TEMA CLARO ===== */
+body.light { background:rgb(240,243,248); color:rgb(30,38,54); background-image:radial-gradient(ellipse at 20% 0%, rgba(220,38,38,0.05), transparent 55%), radial-gradient(ellipse at 80% 100%, rgba(14,116,144,0.06), transparent 55%); }
+body.light::before { opacity:.1; }
+body.light header { background:rgba(250,251,253,0.94); border-bottom:1px solid rgb(205,213,228); }
+body.light .logo { color:rgb(14,116,144); text-shadow:none; }
+body.light .logo span { color:rgb(190,24,60); text-shadow:none; }
+body.light .hud-chip { background:rgb(255,255,255); border-color:rgb(200,208,222); color:rgb(80,92,115); }
+body.light .hud-chip b { color:rgb(21,128,61); }
+body.light #chipAgente b { color:rgb(14,116,144); }
+body.light .btn-mini { background:rgb(255,255,255); color:rgb(60,72,95); border-color:rgb(190,200,216); }
+body.light .btn-mini:hover { border-color:rgb(14,116,144); color:rgb(14,116,144); box-shadow:none; }
+body.light .titulo-juego { color:rgb(190,24,60); text-shadow:none; animation:none; }
+body.light .subtitulo-juego { color:rgb(21,128,61); }
+body.light .tarjeta { background:rgb(255,255,255); border-color:rgb(210,218,230); box-shadow:0 8px 26px rgba(30,38,54,0.08); }
+body.light .tarjeta h2 { color:rgb(14,116,144); }
+body.light .terminal { background:rgb(20,24,33); border-color:rgb(60,70,95); color:rgb(200,210,225); }
+body.light .campo label { color:rgb(80,92,115); }
+body.light .campo input { background:rgb(255,255,255); color:rgb(30,38,54); border-color:rgb(190,200,216); }
+body.light .campo input:focus { border-color:rgb(14,116,144); box-shadow:0 0 8px rgba(14,116,144,0.2); }
+body.light .btn-secundario { color:rgb(14,116,144); border-color:rgb(14,116,144); }
+body.light .btn-secundario:hover { background:rgba(14,116,144,0.08); box-shadow:none; }
+body.light .msj-codigo.ok { color:rgb(21,128,61); }
+body.light .msj-codigo.err { color:rgb(185,28,28); }
+body.light .mapa-titulo { color:rgb(14,116,144); }
+body.light .mapa-sub { color:rgb(100,112,136); }
+body.light .barra-inf .pista { background:rgb(224,230,240); border-color:rgb(200,208,222); }
+body.light .barra-inf .texto { color:rgb(100,112,136); }
+body.light .zona { background:rgb(255,255,255); border-color:rgb(210,218,230); }
+body.light .zona:hover { border-color:rgb(14,116,144); box-shadow:0 8px 20px rgba(14,116,144,0.12); }
+body.light .zona .z-num { color:rgb(120,132,155); }
+body.light .zona h3 { color:rgb(30,38,54); }
+body.light .zona .z-tema { color:rgb(90,102,126); }
+body.light .zona.completa .z-estado { color:rgb(21,128,61); }
+body.light .zona.disponible .z-estado { color:rgb(161,98,7); }
+body.light .zona.bloqueada .z-estado { color:rgb(185,28,28); }
+body.light .zona.insana { background:rgb(255,247,247); border-color:rgb(220,150,150); }
+body.light .zona.insana h3 { color:rgb(185,28,28); text-shadow:none; }
+body.light .zona.insana.disponible .z-estado { color:rgb(185,28,28); }
+body.light .nivel-cab h2 { color:rgb(14,116,144); }
+body.light .tag-xp { color:rgb(161,98,7); border-color:rgb(220,190,110); background:rgba(250,204,21,0.12); }
+body.light .teoria-caja { background:rgb(255,255,255); border-color:rgb(210,218,230); }
+body.light .teoria-cab:hover { background:rgba(21,128,61,0.04); }
+body.light .teoria-cab .tit { color:rgb(21,128,61); }
+body.light .teoria-cab .flecha { color:rgb(120,132,155); }
+body.light .bloque-teoria h3 { color:rgb(30,38,54); border-bottom-color:rgb(224,230,240); }
+body.light .bloque-teoria p { color:rgb(55,66,88); }
+body.light .bloque-teoria code.inl { background:rgb(238,242,248); border-color:rgb(205,213,228); color:rgb(14,116,144); }
+body.light .destacado { background:rgba(250,204,21,0.1); border-left-color:rgb(202,138,4); color:rgb(60,70,92); }
+body.light .lab { background:rgb(255,255,255); border-color:rgb(210,218,230); }
+body.light .lab h3 { color:rgb(185,28,28); }
+body.light .lab .consigna { color:rgb(50,62,85); }
+body.light .chk { background:rgb(248,250,253); border-color:rgb(210,218,230); }
+body.light .chk.pasa { color:rgb(21,128,61); border-color:rgb(160,212,180); }
+body.light .chk.falla { color:rgb(185,28,28); border-color:rgb(228,180,180); }
+body.light .modal { background:rgb(255,255,255); border-color:rgb(220,150,150); box-shadow:0 0 50px rgba(190,24,60,0.2); }
+body.light .modal h2 { color:rgb(185,28,28); text-shadow:none; }
+body.light .modal p { color:rgb(50,62,85); }
+body.light .modal.exito { border-color:rgb(160,212,180); box-shadow:0 0 50px rgba(21,128,61,0.18); }
+body.light .modal.exito h2 { color:rgb(21,128,61); text-shadow:none; }
+body.light .cod-contencion { color:rgb(161,98,7); background:rgb(255,251,235); border-color:rgb(202,138,4); }
+body.light footer { color:rgb(120,132,155); }
+body.light .preview-marco .pv-cab { background:rgb(238,242,248); color:rgb(100,112,136); border-color:rgb(210,218,230); }
+body.light .preview-marco, body.light .editor-marco { border-color:rgb(190,200,216); }
+@media (max-width:640px) {
+  .pantalla { padding:18px 12px 90px; }
+  .tarjeta, .bloque-teoria, .lab { padding:16px 14px; }
+  .titulo-juego { letter-spacing:2px; }
+}
+</style>
+</head>
+<body>
+<header>
+  <div class="logo">&lt;shanuki <span>DW</span>/&gt;</div>
+  <div class="hud">
+    <div class="hud-chip" id="chipAgente">AGENTE: <b id="hudNombre">shana</b></div>
+    <div class="hud-chip">XP: <b id="hudXp">100</b></div>
+    <div class="hud-chip">NOTA: <b id="hudNota">0</b>/10</div>
+    <div class="hud-chip">ZONAS: <b id="hudZonas">1/6</b></div>
+    <button class="btn-mini" id="btnTema" type="button">◐ Tema</button>
+    <button class="btn-mini" id="btnMapa" type="button" style="display: inline-block;">🗺 Mapa</button>
+    <button class="btn-mini btn-reset" id="btnReset" type="button" title="Borra tu progreso guardado y reinicia la partida desde cero">🗑 Reiniciar</button>
+  </div>
+</header>
+
+<!-- ============ PANTALLA INICIO ============ -->
+<section class="pantalla" id="pantInicio">
+  <h1 class="titulo-juego">EXPEDIENTE R.A.Í.Z.</h1>
+  <p class="subtitulo-juego">// BROTE EN EL SERVIDOR CENTRAL · ENTREGA 1: HTML //</p>
+
+  <div class="tarjeta">
+    <h2>⚠ TRANSMISIÓN DE EMERGENCIA</h2>
+    <div class="terminal" id="termIntro"><span class="err">[ALERTA BIODIGITAL · NIVEL 4]</span>
+<span class="sys">&gt; Origen: Servidor Central — Sector Educativo</span>
+<span class="sys">&gt; Fecha del incidente: registro corrupto</span>
+
+Un patógeno de código conocido como <span class="err">MARCADO NECRÓTICO</span> infectó
+el servidor. Las páginas web del edificio se están descomponiendo:
+etiquetas sin cerrar, estructuras podridas, documentos zombis
+que deambulan sin &lt;head&gt; ni &lt;body&gt;.
+
+<span class="warn">La única cura conocida es HTML válido, escrito a mano.</span>
+
+Sos agente de la <span class="ok">Unidad de Contención SHANUKI</span>.
+Tu misión: recorrer las 6 zonas del servidor y purificarlas
+escribiendo el marcado correcto antes de que la infección
+alcance el Núcleo.
+
+<span class="sys">&gt; Buena suerte, agente. La vas a necesitar.</span></div>
+
+    <div class="campo">
+      <label for="inNombre">IDENTIFICACIÓN DEL AGENTE (nombre y apellido)</label>
+      <input type="text" id="inNombre" maxlength="40" autocomplete="off" placeholder="Ej: Ana Rodríguez">
+    </div>
+    <div class="fila-botones">
+      <button class="btn-primario" id="btnComenzar" type="button">▶ Iniciar contención</button>
+    </div>
+    <p class="msj-codigo err" id="msjNombre"></p>
+  </div>
+
+  <div class="tarjeta">
+    <h2>🔑 ¿YA TENÉS UN CÓDIGO DE CONTENCIÓN?</h2>
+    <p style="line-height:1.7; color:rgb(160,175,200)">Si en otra clase o en otra máquina descargaste tu expediente PDF, ahí figura tu <b>código de contención</b>. Ingresalo acá para recuperar las zonas que ya purificaste.</p>
+    <div class="campo">
+      <label for="inCodigo">CÓDIGO DE CONTENCIÓN</label>
+      <input type="text" id="inCodigo" maxlength="14" autocomplete="off" placeholder="RAIZ-XX-XX" style="text-transform:uppercase">
+    </div>
+    <div class="fila-botones">
+      <button class="btn-secundario" id="btnRestaurar" type="button">↻ Restaurar progreso</button>
+    </div>
+    <p class="msj-codigo" id="msjCodigo"></p>
+  </div>
+</section>
+
+<!-- ============ PANTALLA MAPA ============ -->
+<section class="pantalla activa" id="pantMapa">
+  <h2 class="mapa-titulo">MAPA DEL SERVIDOR INFECTADO</h2>
+  <p class="mapa-sub">// seleccioná una zona para iniciar el protocolo de purificación //</p>
+  <div class="barra-inf">
+    <div class="pista"><div class="relleno" id="barraProg" style="width: 17%;"></div></div>
+    <div class="texto" id="txtProg">Contención: 17%</div>
+  </div>
+  <div class="grid-zonas" id="gridZonas"><div class="zona completa" data-idx="0"><div class="z-num">ZONA 01 · +100 XP</div><h3>VESTÍBULO DEL SERVIDOR</h3><div class="z-tema">Estructura del documento HTML</div><div class="z-estado">✔ ZONA PURIFICADA</div></div><div class="zona disponible" data-idx="1"><div class="z-num">ZONA 02 · +100 XP</div><h3>ALA MÉDICA</h3><div class="z-tema">Encabezados &lt;h1&gt; a &lt;h6&gt;</div><div class="z-estado">▶ ACCESO HABILITADO</div></div><div class="zona bloqueada" data-idx="2"><div class="z-num">ZONA 03 · +100 XP</div><h3>ARCHIVO DE EXPEDIENTES</h3><div class="z-tema">Párrafos, saltos y énfasis</div><div class="z-estado">🔒 PURIFICÁ LA ZONA ANTERIOR</div></div><div class="zona bloqueada" data-idx="3"><div class="z-num">ZONA 04 · +100 XP</div><h3>DEPÓSITO DE SUMINISTROS</h3><div class="z-tema">Listas &lt;ul&gt;, &lt;ol&gt; y &lt;li&gt;</div><div class="z-estado">🔒 PURIFICÁ LA ZONA ANTERIOR</div></div><div class="zona bloqueada" data-idx="4"><div class="z-num">ZONA 05 · +100 XP</div><h3>TÚNELES DE COMUNICACIÓN</h3><div class="z-tema">Enlaces &lt;a&gt; y el atributo href</div><div class="z-estado">🔒 PURIFICÁ LA ZONA ANTERIOR</div></div><div class="zona bloqueada" data-idx="5"><div class="z-num">ZONA 06 · +100 XP</div><h3>SALA DE VIGILANCIA</h3><div class="z-tema">Imágenes &lt;img&gt;, src y alt</div><div class="z-estado">🔒 PURIFICÁ LA ZONA ANTERIOR</div></div><div class="zona insana bloqueada" data-idx="6"><div class="z-num">☣ NIVEL INSANO · +350 XP</div><h3>LABORATORIO CERO</h3><div class="z-tema">Contención total: todo junto y sin anestesia</div><div class="z-estado">▓▓ SEÑAL DESCONOCIDA ▓▓</div></div></div>
+</section>
+
+<!-- ============ PANTALLA NIVEL ============ -->
+<section class="pantalla" id="pantNivel">
+  <div class="nivel-cab">
+    <h2 id="nvTitulo">ZONA 01 · VESTÍBULO DEL SERVIDOR</h2>
+    <span class="tag-xp" id="nvXp">+100 XP</span>
+  </div>
+  <div class="terminal" id="nvLog"><span class="sys">&gt; Accediendo al vestíbulo…</span>
+<span class="err">[INFECCIÓN DETECTADA]</span> Documentos zombis deambulan sin estructura: no tienen &lt;!DOCTYPE&gt;, ni cabeza, ni cuerpo.
+<span class="warn">Protocolo:</span> reconstruí el esqueleto de un documento sano para sellar la entrada.</div>
+  <div id="nvTeoria"><div class="teoria-caja abierta" id="teoriaCaja"><div class="teoria-cab" id="teoriaCab"><span class="ico">📖</span><span class="tit">EXPEDIENTE TÉCNICO</span><span class="flecha">▼</span></div><div class="teoria-cuerpo"><div class="teoria-inner"><div class="bloque-teoria"><h3>▸ ¿Qué es HTML?</h3><p>HTML <b>estructura</b> el contenido con <b>etiquetas</b> entre <code class="inl">&lt; &gt;</code>. No programa acciones: organiza qué es cada cosa.</p><p>Todo documento sano tiene el mismo esqueleto:</p><pre class="cod"><span class="tk-doc">&lt;!DOCTYPE html&gt;</span><span class="tk-txt">
+</span><span class="tk-pun">&lt;</span><span class="tk-tag">html</span> <span class="tk-atr">lang</span><span class="tk-pun">=</span><span class="tk-val">"es"</span><span class="tk-pun">&gt;</span><span class="tk-txt">
+  </span><span class="tk-pun">&lt;</span><span class="tk-tag">head</span><span class="tk-pun">&gt;</span><span class="tk-txt">
+    </span><span class="tk-pun">&lt;</span><span class="tk-tag">meta</span> <span class="tk-atr">charset</span><span class="tk-pun">=</span><span class="tk-val">"UTF-8"</span><span class="tk-pun">&gt;</span><span class="tk-txt">
+    </span><span class="tk-pun">&lt;</span><span class="tk-tag">title</span><span class="tk-pun">&gt;</span><span class="tk-txt">Mi página</span><span class="tk-pun">&lt;/</span><span class="tk-tag">title</span><span class="tk-pun">&gt;</span><span class="tk-txt">
+  </span><span class="tk-pun">&lt;/</span><span class="tk-tag">head</span><span class="tk-pun">&gt;</span><span class="tk-txt">
+  </span><span class="tk-pun">&lt;</span><span class="tk-tag">body</span><span class="tk-pun">&gt;</span><span class="tk-txt">
+    </span><span class="tk-pun">&lt;</span><span class="tk-tag">p</span><span class="tk-pun">&gt;</span><span class="tk-txt">Contenido visible</span><span class="tk-pun">&lt;/</span><span class="tk-tag">p</span><span class="tk-pun">&gt;</span><span class="tk-txt">
+  </span><span class="tk-pun">&lt;/</span><span class="tk-tag">body</span><span class="tk-pun">&gt;</span><span class="tk-txt">
+</span><span class="tk-pun">&lt;/</span><span class="tk-tag">html</span><span class="tk-pun">&gt;</span></pre><p><b>&lt;!DOCTYPE html&gt;</b> le avisa al navegador que esto es HTML moderno. <b>&lt;html lang="es"&gt;</b> envuelve todo e indica el idioma. <b>&lt;head&gt;</b> es la "cabeza": información sobre la página que no se ve (la codificación <code class="inl">&lt;meta charset="UTF-8"&gt;</code> y el <code class="inl">&lt;title&gt;</code> que aparece en la pestaña). <b>&lt;body&gt;</b> es el "cuerpo": todo lo que el usuario ve.</p><div class="destacado">🧠 Casi toda etiqueta se abre y se cierra: <code class="inl">&lt;title&gt;…&lt;/title&gt;</code>. Las que no cierran (<code class="inl">&lt;meta&gt;</code>) son <b>vacías</b>.</div></div></div></div></div></div>
+  <div class="lab">
+    <h3>☣ PROTOCOLO DE PURIFICACIÓN</h3>
+    <div class="consigna" id="nvConsigna">Escribí un documento HTML completo y sano que tenga:<ul><li>La declaración <code class="inl">&lt;!DOCTYPE html&gt;</code> en la primera línea.</li><li><code class="inl">&lt;html&gt;</code> con el atributo <code class="inl">lang="es"</code>.</li><li>Un <code class="inl">&lt;head&gt;</code> con <code class="inl">&lt;meta charset="UTF-8"&gt;</code> y un <code class="inl">&lt;title&gt;</code> con algún texto.</li><li>Un <code class="inl">&lt;body&gt;</code> con un párrafo que diga exactamente: <b>Sector asegurado</b>.</li></ul></div>
+    <div class="editor-marco">
+      <div class="editor-barra">
+        <span class="punto p1"></span><span class="punto p2"></span><span class="punto p3"></span>
+        <span class="nom" id="nvArchivo">vestibulo.html</span>
+      </div>
+      <div class="editor-zona">
+        <pre id="edHl" aria-hidden="true"><span class="tk-com">&lt;!-- Reconstruí acá el esqueleto del documento --&gt;</span><span class="tk-txt">
+</span><span class="tk-doc">&lt;!DOCTYPE html&gt;</span><span class="tk-txt">
+</span><span class="tk-pun">&lt;</span><span class="tk-tag">html</span> <span class="tk-atr">lang</span><span class="tk-pun">=</span><span class="tk-val">"es"</span><span class="tk-pun">&gt;</span><span class="tk-txt">
+  </span><span class="tk-pun">&lt;</span><span class="tk-tag">head</span><span class="tk-pun">&gt;</span><span class="tk-txt">
+    </span><span class="tk-pun">&lt;</span><span class="tk-tag">meta</span> <span class="tk-atr">charset</span><span class="tk-pun">=</span><span class="tk-val">"UTF-8"</span><span class="tk-pun">&gt;</span><span class="tk-txt">
+    </span><span class="tk-pun">&lt;</span><span class="tk-tag">title</span><span class="tk-pun">&gt;</span><span class="tk-txt">Mi página</span><span class="tk-pun">&lt;/</span><span class="tk-tag">title</span><span class="tk-pun">&gt;</span><span class="tk-txt">
+  </span><span class="tk-pun">&lt;/</span><span class="tk-tag">head</span><span class="tk-pun">&gt;</span><span class="tk-txt">
+  </span><span class="tk-pun">&lt;</span><span class="tk-tag">body</span><span class="tk-pun">&gt;</span><span class="tk-txt">
+    </span><span class="tk-pun">&lt;</span><span class="tk-tag">p</span><span class="tk-pun">&gt;</span><span class="tk-txt">Sector asegurado</span><span class="tk-pun">&lt;/</span><span class="tk-tag">p</span><span class="tk-pun">&gt;</span><span class="tk-txt">
+  </span><span class="tk-pun">&lt;/</span><span class="tk-tag">body</span><span class="tk-pun">&gt;</span><span class="tk-txt">
+</span><span class="tk-pun">&lt;/</span><span class="tk-tag">html</span><span class="tk-pun">&gt;</span>
+</pre>
+        <textarea id="edTxt" spellcheck="false" autocomplete="off" autocapitalize="off"></textarea>
+      </div>
+    </div>
+    <div class="fila-lab">
+      <button class="btn-verificar" id="btnVerificar" type="button">🧪 Analizar muestra</button>
+      <button class="btn-preview" id="btnPreview" type="button">👁 Ver resultado</button>
+      <button class="btn-preview" id="btnReiniciar" type="button">↺ Reiniciar código</button>
+    </div>
+    <div class="preview-marco vis" id="pvMarco">
+      <div class="pv-cab">// vista del navegador — así lo ve un civil //</div>
+      <iframe id="pvFrame" title="Vista previa del código del estudiante" src="./EXPEDIENTE R.A.Í.Z. · SHANUKI DW · Entrega 1_ HTML_files/saved_resource.html"></iframe>
+    </div>
+    <div class="chequeos vis" id="nvChequeos"><div class="chk pasa">✔ La primera línea debe ser &lt;!DOCTYPE html&gt;</div><div class="chk pasa">✔ &lt;html&gt; necesita el atributo lang="es"</div><div class="chk pasa">✔ Falta abrir la etiqueta &lt;head&gt;</div><div class="chk pasa">✔ Falta cerrar &lt;/head&gt;</div><div class="chk pasa">✔ Falta &lt;meta charset="UTF-8"&gt; dentro del head</div><div class="chk pasa">✔ Falta un &lt;title&gt; con texto adentro</div><div class="chk pasa">✔ Falta abrir la etiqueta &lt;body&gt;</div><div class="chk pasa">✔ Falta cerrar &lt;/body&gt;</div><div class="chk pasa">✔ Falta un párrafo &lt;p&gt; que diga "Sector asegurado"</div><div class="chk pasa">✔ Falta cerrar &lt;/html&gt; al final</div></div>
+  </div>
+  <div class="nav-nivel">
+    <button class="btn-secundario" id="btnVolverMapa" type="button">← Volver al mapa</button>
+    <button class="btn-primario" id="btnSigZona" type="button" style="display: inline-block;">Siguiente zona →</button>
+  </div>
+</section>
+
+<!-- ============ MODAL ZONA PURIFICADA ============ -->
+<div class="velo" id="veloExito">
+  <div class="modal exito">
+    <h2>✔ ZONA PURIFICADA</h2>
+    <p id="msjExito">El vestíbulo quedó sellado. Los documentos zombis ya no pueden entrar: la estructura DOCTYPE → html → head → body es tu primera vacuna. <b>+100 XP.</b> Tu código de contención actualizado es: <b style="font-family:&#39;Courier Prime&#39;,monospace">RAIZ-01-1Y</b></p>
+    <p style="font-family:&#39;Courier Prime&#39;,monospace; font-size:.85rem">Recordá descargar tu <b>expediente PDF</b> (botón 📄) como evidencia del proceso. Ahí está tu código de contención.</p>
+    <div class="fila-botones">
+      <button class="btn-primario" id="btnExitoOk" type="button">Continuar</button>
+    </div>
+  </div>
+</div>
+
+<!-- ============ MODAL DESAFÍO INSANO ============ -->
+<div class="velo" id="veloInsano">
+  <div class="modal">
+    <h2>☣ SEÑAL DETECTADA: LABORATORIO CERO</h2>
+    <div class="terminal"><span class="err">[TRANSMISIÓN CIFRADA · CANAL PROHIBIDO]</span>
+Purificaste las 6 zonas. El servidor está a salvo.
+Podrías retirarte ahora, con tu expediente limpio.
+
+Pero los sensores detectan algo más, debajo de todo:
+<span class="err">el LABORATORIO CERO</span>, donde nació el Marcado Necrótico.
+
+<span class="warn">Nadie te obliga a bajar. Tu misión ya está completa.</span>
+
+Solo los agentes de élite intentan la contención total.
+La mayoría… no la termina.</div>
+    <p style="font-weight:700; letter-spacing:1px">¿Bajás al origen de la infección o evacuás con lo puesto?</p>
+    <div class="fila-botones">
+      <button class="btn-primario" id="btnAceptarInsano" type="button">☣ Acepto el desafío INSANO</button>
+      <button class="btn-secundario" id="btnEvacuar" type="button">Evacuar por ahora</button>
+    </div>
+  </div>
+</div>
+
+<!-- ============ MODAL CONTENCIÓN TOTAL ============ -->
+<div class="velo" id="veloFinal">
+  <div class="modal exito">
+    <h2>🏆 CONTENCIÓN TOTAL</h2>
+    <p>Purificaste el <b>Laboratorio Cero</b>. El Marcado Necrótico fue erradicado de raíz. Quedás registrado en el expediente como <b>agente de élite</b>.</p>
+    <p>Tu nuevo código de contención guarda este logro:</p>
+    <div class="cod-contencion" id="codFinal">—</div>
+    <div class="fila-botones">
+      <button class="btn-primario" id="btnFinalOk" type="button">Descargar expediente 📄</button>
+      <button class="btn-secundario" id="btnFinalCerrar" type="button">Cerrar</button>
+    </div>
+  </div>
+</div>
+
+<button id="btnPdf" type="button" title="Descargar expediente PDF" class="vis">📄</button>
+
+<footer>&lt;shanuki DW/&gt; · Expediente R.A.Í.Z. · Ciencias de la Computación · Ceibal · Uruguay</footer>
+<script>
+(function(){
+'use strict';
+
+/* ================= HELPERS ================= */
+function $id(id){ return document.getElementById(id); }
+function setHTML(id,h){ $id(id).innerHTML = h; }
+function enEl(id,ev,fn){ $id(id).addEventListener(ev,fn); }
+function esc(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+/* ================= TOKENIZADOR HTML (paleta VS Code Dark+) ================= */
+function tokAttrs(a){
+  var out='', re=/(\s+)|([a-zA-Z_:][a-zA-Z0-9_:.-]*)|(=)|("[^"]*"?|'[^']*'?)|([^\s=<>]+)/g, m;
+  while((m=re.exec(a))!==null){
+    if(m[1]) out+=esc(m[1]);
+    else if(m[2]) out+='<span class="tk-atr">'+esc(m[2])+'</span>';
+    else if(m[3]) out+='<span class="tk-pun">=</span>';
+    else if(m[4]) out+='<span class="tk-val">'+esc(m[4])+'</span>';
+    else if(m[5]) out+='<span class="tk-val">'+esc(m[5])+'</span>';
+  }
+  return out;
+}
+function tokTag(t){
+  var m=t.match(/^(<\/?)([a-zA-Z][a-zA-Z0-9-]*)([\s\S]*?)(\/?>|)$/);
+  if(!m) return '<span class="tk-pun">'+esc(t)+'</span>';
+  return '<span class="tk-pun">'+esc(m[1])+'</span>'+
+         '<span class="tk-tag">'+esc(m[2])+'</span>'+
+         tokAttrs(m[3])+
+         '<span class="tk-pun">'+esc(m[4])+'</span>';
+}
+function tokHTML(src){
+  src=String(src);
+  var out='', i=0, n=src.length;
+  while(i<n){
+    var rest=src.slice(i), m;
+    if((m=rest.match(/^\x3C!--[\s\S]*?(--\x3E|$)/))){
+      out+='<span class="tk-com">'+esc(m[0])+'</span>'; i+=m[0].length; continue;
+    }
+    if((m=rest.match(/^<![^>]*>?/))){
+      out+='<span class="tk-doc">'+esc(m[0])+'</span>'; i+=m[0].length; continue;
+    }
+    if((m=rest.match(/^<\/?[a-zA-Z][^<>]*(>|$)/))){
+      out+=tokTag(m[0]); i+=m[0].length; continue;
+    }
+    var j=rest.indexOf('<'); if(j===-1) j=rest.length; if(j===0) j=1;
+    out+='<span class="tk-txt">'+esc(rest.slice(0,j))+'</span>'; i+=j;
+  }
+  return out;
+}
+function bloqueCod(code){ return '<pre class="cod">'+tokHTML(code)+'</pre>'; }
+
+/* ================= ESTADO ================= */
+var CLAVE_LS='shanukiRaizV2';
+var estado={ nombre:'', mask:0, err:{} };   /* bits 0..5 zonas, bit 6 insano; err = intentos fallidos por id */
+var nivelActual=-1;                          /* índice en NIVELES */
+
+var LIMITE_ERRORES=3;                         /* penaliza pasado el 3er intento (al 4to fallo) */
+var XP_MAX=950;                               /* 6 zonas x100 + insano 350 */
+
+function guardar(){
+  try{ localStorage.setItem(CLAVE_LS, JSON.stringify({n:estado.nombre,m:estado.mask,e:estado.err})); }catch(e){}
+}
+function cargar(){
+  try{
+    var d=JSON.parse(localStorage.getItem(CLAVE_LS)||'null');
+    if(d && typeof d.m==='number'){
+      estado.nombre=String(d.n||'');
+      estado.mask=d.m&127;
+      estado.err=(d.e && typeof d.e==='object' && !Array.isArray(d.e))?d.e:{};
+    }
+  }catch(e){ estado={ nombre:'', mask:0, err:{} }; }
+  if(!estado.err || typeof estado.err!=='object') estado.err={};
+}
+function zonasHechas(){ var c=0; for(var i=0;i<6;i++) if(estado.mask&(1<<i)) c++; return c; }
+function insanoHecho(){ return !!(estado.mask&64); }
+function xpTotal(){ return zonasHechas()*100 + (insanoHecho()?350:0); }
+
+/* ¿la zona con este id está penalizada? (más de 3 intentos fallidos) */
+function zonaPenalizada(id){ return ((estado.err&&estado.err[id])||0) > LIMITE_ERRORES; }
+
+/* XP efectivo: una zona penalizada aporta la mitad de su XP */
+function xpEfectivo(){
+  var xp=0;
+  for(var i=0;i<6;i++){
+    if(estado.mask&(1<<i)){ var id=NIVELES[i].id; xp += zonaPenalizada(id)?50:100; }
+  }
+  if(insanoHecho()){ xp += zonaPenalizada('ins')?175:350; }
+  return xp;
+}
+/* Nota de libreta 0..10 = XP efectivo sobre el total (950), redondeado a 1 decimal */
+function notaLibreta(){ return Math.round( (xpEfectivo()/XP_MAX)*10 * 10 )/10; }
+function totalErrores(){ var t=0; for(var k in estado.err){ if(estado.err.hasOwnProperty(k)) t+=estado.err[k]||0; } return t; }
+function zonasPenalizadas(){ var c=0; for(var i=0;i<6;i++){ if(zonaPenalizada(NIVELES[i].id)) c++; } if(zonaPenalizada('ins')) c++; return c; }
+
+/* ================= CÓDIGO DE CONTENCIÓN ================= */
+function b36(num,len){ var s=num.toString(36).toUpperCase(); while(s.length<len) s='0'+s; return s; }
+function genCodigo(mask){
+  var m=mask&127;
+  var chk=(m*29+41)%1296;
+  return 'RAIZ-'+b36(m,2)+'-'+b36(chk,2);
+}
+function leerCodigo(str){
+  var m=String(str).trim().toUpperCase().match(/^RAIZ-([0-9A-Z]{2})-([0-9A-Z]{2})$/);
+  if(!m) return -1;
+  var mask=parseInt(m[1],36), chk=parseInt(m[2],36);
+  if(isNaN(mask)||isNaN(chk)||mask>127) return -1;
+  if((mask*29+41)%1296!==chk) return -1;
+  return mask;
+}
+
+/* ================= TEMA ================= */
+function aplicarTema(t){
+  document.body.classList.toggle('light', t==='light');
+  try{ localStorage.setItem(CLAVE_LS+'Tema', t); }catch(e){}
+}
+enEl('btnTema','click',function(){
+  aplicarTema(document.body.classList.contains('light')?'dark':'light');
+});
+try{ if(localStorage.getItem(CLAVE_LS+'Tema')==='light') aplicarTema('light'); }catch(e){}
+
+/* ================= REINICIAR PARTIDA ================= */
+function reiniciarPartida(){
+  var msg="⚠ Esto borra TODO tu progreso guardado (zonas purificadas, intentos y tu código de contención) y reinicia la partida desde cero.\n\nEsta acción no se puede deshacer. ¿Querés continuar?";
+  if(!confirm(msg)) return;
+  try{ localStorage.removeItem(CLAVE_LS); }catch(e){}
+  estado={ nombre:'', mask:0, err:{} };
+  nivelActual=-1;
+  var inN=$id('inNombre'); if(inN) inN.value='';
+  var inC=$id('inCodigo'); if(inC) inC.value='';
+  var mN=$id('msjNombre'); if(mN) mN.innerHTML='';
+  var mC=$id('msjCodigo'); if(mC){ mC.innerHTML=''; mC.className='msj-codigo'; }
+  refrescarHud();
+  irA('pantInicio');
+  alert("🧹 Partida reiniciada. El almacenamiento quedó limpio: podés registrarte de nuevo como agente.");
+}
+enEl('btnReset','click',reiniciarPartida);
+
+/* ================= HUD Y NAVEGACIÓN ================= */
+function refrescarHud(){
+  setHTML('hudNombre', esc(estado.nombre||'—'));
+  setHTML('hudXp', String(xpTotal()));
+  var elNota=$id('hudNota'); if(elNota) setHTML('hudNota', String(notaLibreta()));
+  setHTML('hudZonas', zonasHechas()+'/6'+(insanoHecho()?' ☣':''));
+  $id('btnPdf').classList.toggle('vis', !!estado.nombre);
+}
+function irA(id){
+  var p=document.querySelectorAll('.pantalla');
+  for(var i=0;i<p.length;i++) p[i].classList.remove('activa');
+  $id(id).classList.add('activa');
+  $id('btnMapa').style.display = (id==='pantInicio') ? 'none' : 'inline-block';
+  window.scrollTo(0,0);
+}
+
+/* ================= NIVELES =================
+   check = [patron, mensaje, min, max]  (min por defecto 1; max por defecto Infinity)
+   raw:true en un check => se evalúa sobre el código SIN quitar comentarios */
+var NIVELES=[
+{
+id:'z1', num:'ZONA 01', titulo:'VESTÍBULO DEL SERVIDOR', tema:'Estructura del documento HTML', xp:100,
+log:'<span class="sys">&gt; Accediendo al vestíbulo…</span>\n<span class="err">[INFECCIÓN DETECTADA]</span> Documentos zombis deambulan sin estructura: no tienen &lt;!DOCTYPE&gt;, ni cabeza, ni cuerpo.\n<span class="warn">Protocolo:</span> reconstruí el esqueleto de un documento sano para sellar la entrada.',
+teoria:[
+{h:'¿Qué es HTML?'},
+{p:'HTML <b>estructura</b> el contenido con <b>etiquetas</b> entre <code class="inl">&lt; &gt;</code>. No programa acciones: organiza qué es cada cosa.'},
+{p:'Todo documento sano tiene el mismo esqueleto:'},
+{c:'\x3C!DOCTYPE html>\n<html lang="es">\n  <head>\n    <meta charset="UTF-8">\n    <title>Mi página</title>\n  </head>\n  <body>\n    <p>Contenido visible</p>\n  </body>\n</html>'},
+{p:'<b>&lt;!DOCTYPE html&gt;</b> le avisa al navegador que esto es HTML moderno. <b>&lt;html lang="es"&gt;</b> envuelve todo e indica el idioma. <b>&lt;head&gt;</b> es la "cabeza": información sobre la página que no se ve (la codificación <code class="inl">&lt;meta charset="UTF-8"&gt;</code> y el <code class="inl">&lt;title&gt;</code> que aparece en la pestaña). <b>&lt;body&gt;</b> es el "cuerpo": todo lo que el usuario ve.'},
+{d:'🧠 Casi toda etiqueta se abre y se cierra: <code class="inl">&lt;title&gt;…&lt;/title&gt;</code>. Las que no cierran (<code class="inl">&lt;meta&gt;</code>) son <b>vacías</b>.'}
+],
+consigna:'Escribí un documento HTML completo y sano que tenga:<ul><li>La declaración <code class="inl">&lt;!DOCTYPE html&gt;</code> en la primera línea.</li><li><code class="inl">&lt;html&gt;</code> con el atributo <code class="inl">lang="es"</code>.</li><li>Un <code class="inl">&lt;head&gt;</code> con <code class="inl">&lt;meta charset="UTF-8"&gt;</code> y un <code class="inl">&lt;title&gt;</code> con algún texto.</li><li>Un <code class="inl">&lt;body&gt;</code> con un párrafo que diga exactamente: <b>Sector asegurado</b>.</li></ul>',
+inicial:'\x3C!-- Reconstruí acá el esqueleto del documento --\x3E\n',
+archivo:'vestibulo.html',
+checks:[
+['^\\s*<!doctype\\s+html\\s*>','La primera línea debe ser &lt;!DOCTYPE html&gt;'],
+['<html[^>]*\\blang\\s*=\\s*["\']es','&lt;html&gt; necesita el atributo lang="es"'],
+['<head[\\s>]','Falta abrir la etiqueta &lt;head&gt;'],
+['</head\\s*>','Falta cerrar &lt;/head&gt;'],
+['<meta[^>]*charset','Falta &lt;meta charset="UTF-8"&gt; dentro del head'],
+['<title\\s*>[^<]+</title\\s*>','Falta un &lt;title&gt; con texto adentro'],
+['<body[\\s>]','Falta abrir la etiqueta &lt;body&gt;'],
+['</body\\s*>','Falta cerrar &lt;/body&gt;'],
+['<p[^>]*>[^<]*sector\\s+asegurado[^<]*</p\\s*>','Falta un párrafo &lt;p&gt; que diga "Sector asegurado"'],
+['</html\\s*>','Falta cerrar &lt;/html&gt; al final']
+],
+exito:'El vestíbulo quedó sellado. Los documentos zombis ya no pueden entrar: la estructura DOCTYPE → html → head → body es tu primera vacuna.'
+},
+{
+id:'z2', num:'ZONA 02', titulo:'ALA MÉDICA', tema:'Encabezados <h1> a <h6>', xp:100,
+log:'<span class="sys">&gt; Ingresando al ala médica…</span>\n<span class="err">[ANOMALÍA]</span> Los informes clínicos perdieron su jerarquía: todos los títulos gritan con el mismo tamaño y nadie entiende qué es importante.\n<span class="warn">Protocolo:</span> restaurá la jerarquía de encabezados del informe del brote.',
+teoria:[
+{h:'Encabezados: la jerarquía salva vidas'},
+{p:'Hay seis encabezados, de <code class="inl">&lt;h1&gt;</code> (más importante) a <code class="inl">&lt;h6&gt;</code>. Se eligen por <b>jerarquía</b>, no por tamaño: son los títulos y subtítulos.'},
+{c:'<h1>Título principal del documento</h1>\n<h2>Sección</h2>\n<h3>Subsección</h3>'},
+{d:'⚠ Una página tiene <b>un solo &lt;h1&gt;</b>: el título principal. Duplicarlo confunde a todos.'},
+{p:'Además dan <b>accesibilidad</b>: con lector de pantalla se salta de encabezado en encabezado para orientarse.'}
+],
+consigna:'Escribí el informe del ala médica con esta jerarquía exacta:<ul><li>Un único <code class="inl">&lt;h1&gt;</code> que diga <b>Informe del brote</b>.</li><li>Un <code class="inl">&lt;h2&gt;</code> que diga <b>Síntomas</b>.</li><li>Un <code class="inl">&lt;h3&gt;</code> que diga <b>Casos confirmados</b>.</li><li>Debajo, un <code class="inl">&lt;h4&gt;</code> que diga <b>Detalle</b>.</li></ul>',
+inicial:'\x3C!-- Restaurá la jerarquía del informe --\x3E\n',
+archivo:'ala-medica.html',
+checks:[
+['<h1[^>]*>[^<]*informe\\s+del\\s+brote[^<]*</h1\\s*>','Falta &lt;h1&gt; con el texto "Informe del brote"'],
+['<h1[\\s>]','Tiene que haber exactamente UN &lt;h1&gt; (ni cero, ni dos)',1,1],
+['<h2[^>]*>[^<]*s[íi]ntomas[^<]*</h2\\s*>','Falta &lt;h2&gt; con el texto "Síntomas"'],
+['<h3[^>]*>[^<]*casos\\s+confirmados[^<]*</h3\\s*>','Falta &lt;h3&gt; con el texto "Casos confirmados"'],
+['<h4[^>]*>[^<]*detalle[^<]*</h4\\s*>','Falta un &lt;h4&gt; con el texto "Detalle"']
+],
+exito:'El ala médica recuperó su jerarquía. Ahora cualquier agente (o lector de pantalla) entiende el informe de un vistazo.'
+},
+{
+id:'z3', num:'ZONA 03', titulo:'ARCHIVO DE EXPEDIENTES', tema:'Párrafos, saltos y énfasis', xp:100,
+log:'<span class="sys">&gt; Abriendo el archivo de expedientes…</span>\n<span class="err">[CORRUPCIÓN]</span> Los textos se fundieron en un bloque ilegible: sin párrafos, sin énfasis, sin respiro.\n<span class="warn">Protocolo:</span> redactá el expediente con párrafos limpios y marcá lo importante.',
+teoria:[
+{h:'Párrafos y énfasis con significado'},
+{p:'<code class="inl">&lt;p&gt;</code> define un <b>párrafo</b>. El navegador ignora tus saltos de línea del código: para forzar uno dentro del párrafo usás <code class="inl">&lt;br&gt;</code> (etiqueta vacía).'},
+{c:'<p>Primer párrafo del expediente.</p>\n<p>Riesgo: <strong>PELIGRO EXTREMO</strong>.<br>\nEstado: <em>sin confirmar</em>.</p>'},
+{p:'<code class="inl">&lt;strong&gt;</code> = importancia (negrita), <code class="inl">&lt;em&gt;</code> = énfasis (cursiva). No son decorativos: dan <b>significado</b>, y el lector de pantalla cambia la entonación.'},
+{d:'🧠 En HTML decimos <b>qué es</b> cada cosa, no cómo se ve. Del aspecto se encarga CSS (próxima entrega).'}
+],
+consigna:'Redactá el expediente de la zona con:<ul><li>Al menos <b>dos</b> párrafos <code class="inl">&lt;p&gt;</code>.</li><li>Una palabra o frase marcada con <code class="inl">&lt;strong&gt;</code>.</li><li>Una palabra o frase marcada con <code class="inl">&lt;em&gt;</code>.</li><li>Un salto de línea <code class="inl">&lt;br&gt;</code> dentro de algún párrafo.</li></ul>',
+inicial:'\x3C!-- Redactá acá el expediente --\x3E\n',
+archivo:'expediente.html',
+checks:[
+['<p[^>]*>[\\s\\S]*?</p\\s*>','Se necesitan al menos DOS párrafos completos',2],
+['<strong\\s*>[^<]+</strong\\s*>','Falta marcar algo importante con &lt;strong&gt;'],
+['<em\\s*>[^<]+</em\\s*>','Falta marcar un énfasis con &lt;em&gt;'],
+['<br\\s*/?\\s*>','Falta un salto de línea &lt;br&gt;']
+],
+exito:'El archivo vuelve a respirar: párrafos limpios, énfasis con significado. La semántica es desinfectante puro.'
+},
+{
+id:'z4', num:'ZONA 04', titulo:'DEPÓSITO DE SUMINISTROS', tema:'Listas <ul>, <ol> y <li>', xp:100,
+log:'<span class="sys">&gt; Forzando la puerta del depósito…</span>\n<span class="err">[CAOS TOTAL]</span> Los suministros están tirados por el piso y el protocolo de evacuación perdió el orden de sus pasos.\n<span class="warn">Protocolo:</span> inventariá los suministros y ordená los pasos de evacuación.',
+teoria:[
+{h:'Listas: orden contra el caos'},
+{p:'<code class="inl">&lt;ul&gt;</code> = lista con viñetas (orden no importa). <code class="inl">&lt;ol&gt;</code> = lista numerada automáticamente (cuando el orden ES el mensaje, como pasos).'},
+{c:'<ul>\n  <li>Linterna</li>\n  <li>Botiquín</li>\n</ul>\n\n<ol>\n  <li>Mantener la calma</li>\n  <li>Ir a la salida norte</li>\n</ol>'},
+{p:'Cada elemento va dentro de <code class="inl">&lt;li&gt;</code>, y los <code class="inl">&lt;li&gt;</code> solo viven dentro de una <code class="inl">&lt;ul&gt;</code> o <code class="inl">&lt;ol&gt;</code>.'},
+{d:'🧠 La numeración de la <code class="inl">&lt;ol&gt;</code> la pone el navegador solo: si agregás un paso, se renumera todo.'}
+],
+consigna:'Organizá el depósito con:<ul><li>Una <code class="inl">&lt;ul&gt;</code> con al menos <b>3</b> suministros (3 <code class="inl">&lt;li&gt;</code>).</li><li>Una <code class="inl">&lt;ol&gt;</code> con al menos <b>3</b> pasos del protocolo de evacuación.</li><li>Todos los ítems con texto adentro.</li></ul>',
+inicial:'\x3C!-- Inventario y protocolo van acá --\x3E\n',
+archivo:'deposito.html',
+checks:[
+['<ul[\\s>]','Falta abrir la lista desordenada &lt;ul&gt;'],
+['</ul\\s*>','Falta cerrar &lt;/ul&gt;'],
+['<ol[\\s>]','Falta abrir la lista ordenada &lt;ol&gt;'],
+['</ol\\s*>','Falta cerrar &lt;/ol&gt;'],
+['<li[^>]*>[^<]+</li\\s*>','Se necesitan al menos 6 ítems &lt;li&gt; con texto (3 y 3)',6]
+],
+exito:'Depósito inventariado y protocolo numerado. El caos retrocede cuando la estructura avanza.'
+},
+{
+id:'z5', num:'ZONA 05', titulo:'TÚNELES DE COMUNICACIÓN', tema:'Enlaces <a> y el atributo href', xp:100,
+log:'<span class="sys">&gt; Descendiendo a los túneles…</span>\n<span class="err">[AISLAMIENTO]</span> La infección cortó todos los enlaces: esta zona quedó incomunicada del resto de la web.\n<span class="warn">Protocolo:</span> tendé puentes con etiquetas &lt;a&gt; para restablecer la comunicación.',
+teoria:[
+{h:'Enlaces: la "hiper" de HyperText'},
+{p:'<code class="inl">&lt;a&gt;</code> crea un <b>enlace</b>. <code class="inl">href</code> indica el destino; el texto entre apertura y cierre es lo que se ve y se cliquea.'},
+{c:'<a href="https://www.ceibal.edu.uy">Sitio de Ceibal</a>\n\n<a href="https://developer.mozilla.org" target="_blank">MDN (en pestaña nueva)</a>'},
+{p:'<code class="inl">target="_blank"</code> abre el destino en una <b>pestaña nueva</b>, sin abandonar la página actual.'},
+{d:'⚠ El texto del enlace debe decir <b>a dónde va</b>. "Hacé clic acá" no comunica; "Sitio de Ceibal" sí.'}
+],
+consigna:'Restablecé la comunicación con:<ul><li>Un enlace a <code class="inl">https://www.ceibal.edu.uy</code> con un texto descriptivo.</li><li>Otro enlace a cualquier sitio que empiece con <code class="inl">https://</code> y que se abra en pestaña nueva con <code class="inl">target="_blank"</code>.</li><li>Ambos enlaces con texto visible adentro.</li></ul>',
+inicial:'\x3C!-- Tendé los puentes acá --\x3E\n',
+archivo:'tuneles.html',
+checks:[
+['<a[^>]*href\\s*=\\s*["\'][^"\']*ceibal[^"\']*["\'][^>]*>[^<]+</a\\s*>','Falta un enlace a ceibal.edu.uy con texto visible'],
+['<a[^>]*href\\s*=\\s*["\']https://','Los enlaces deben usar direcciones completas que empiecen con https://'],
+['<a[^>]*target\\s*=\\s*["\']_blank["\']','Falta un enlace con target="_blank" (pestaña nueva)'],
+['<a[\\s>]','Se necesitan al menos DOS enlaces &lt;a&gt;',2]
+],
+exito:'Los túneles vuelven a comunicar. Cada &lt;a href&gt; es un puente tendido sobre la infección: eso es, literalmente, la web.'
+},
+{
+id:'z6', num:'ZONA 06', titulo:'SALA DE VIGILANCIA', tema:'Imágenes <img>, src y alt', xp:100,
+log:'<span class="sys">&gt; Última zona: sala de vigilancia…</span>\n<span class="err">[PANTALLAS MUERTAS]</span> Las cámaras de seguridad quedaron ciegas. Sin imágenes, nadie puede monitorear el brote.\n<span class="warn">Protocolo:</span> reconectá las cámaras con etiquetas &lt;img&gt; bien descriptas.',
+teoria:[
+{h:'Imágenes: ver y describir'},
+{p:'<code class="inl">&lt;img&gt;</code> es <b>vacía</b> y necesita dos atributos: <code class="inl">src</code> (ruta del archivo) y <code class="inl">alt</code> (descripción de la imagen).'},
+{c:'<img src="imagenes/camara-norte.png" alt="Vista de la camara del pasillo norte">'},
+{p:'El <code class="inl">alt</code> se muestra si la imagen no carga y lo leen los lectores de pantalla. Es accesibilidad, no decoración.'},
+{d:'🧠 Acá las rutas no existen: verás la imagen rota <b>con tu alt al lado</b>. Ese es el punto: tu descripción sobrevive aunque la imagen muera.'}
+],
+consigna:'Reconectá la vigilancia con:<ul><li>Al menos <b>dos</b> etiquetas <code class="inl">&lt;img&gt;</code>, cada una con su atributo <code class="inl">src</code> (inventá rutas como <code class="inl">imagenes/camara1.png</code>).</li><li>Cada imagen con un <code class="inl">alt</code> descriptivo (texto no vacío).</li><li>Un <code class="inl">&lt;h2&gt;</code> arriba que diga <b>Cámaras activas</b>.</li></ul>',
+inicial:'\x3C!-- Reconectá las cámaras acá --\x3E\n',
+archivo:'vigilancia.html',
+checks:[
+['<h2[^>]*>[^<]*c[áa]maras\\s+activas[^<]*</h2\\s*>','Falta el &lt;h2&gt; "Cámaras activas"'],
+['<img[^>]*\\bsrc\\s*=\\s*["\'][^"\']+["\']','Se necesitan al menos DOS &lt;img&gt; con atributo src',2],
+['<img[^>]*\\balt\\s*=\\s*["\'][^"\']+["\']','Cada imagen necesita un alt con texto descriptivo (faltan)',2]
+],
+exito:'Las cámaras vuelven a transmitir y cada una tiene su descripción. Con las 6 zonas purificadas… el servidor debería estar a salvo. ¿Debería?'
+},
+{
+id:'ins', num:'☣ NIVEL INSANO', titulo:'LABORATORIO CERO', tema:'Contención total: todo junto y sin anestesia', xp:350, insano:true,
+log:'<span class="err">[ZONA PROHIBIDA · ACCESO BAJO TU PROPIO RIESGO]</span>\n<span class="sys">&gt; Descendiendo al Laboratorio Cero…</span>\nAcá nació el Marcado Necrótico. Para erradicarlo de raíz tenés que redactar el <span class="warn">Informe Final de Contención</span>: un documento completo, impecable, sin una sola etiqueta fuera de lugar.\n<span class="err">No hay teoría nueva. No hay red de seguridad. Solo vos y todo lo que aprendiste.</span>',
+teoria:[
+{h:'Briefing de la misión final'},
+{p:'Combina <b>todo</b>: estructura, encabezados, párrafos, listas, enlaces e imágenes. Cada requisito se analiza por separado y debe quedar en verde.'},
+{d:'☣ Hay un requisito que <b>nadie explicó</b>: una <b>lista anidada</b> (una &lt;ol&gt; dentro de un &lt;li&gt; de la &lt;ul&gt;). Deducila sola… o consultá la documentación, como toda profesional.'}
+],
+consigna:'Redactá el <b>Informe Final de Contención</b> que cumpla TODO esto:<ul><li>Estructura completa: <code class="inl">&lt;!DOCTYPE html&gt;</code>, <code class="inl">&lt;html lang="es"&gt;</code>, <code class="inl">&lt;head&gt;</code> con <code class="inl">&lt;meta charset="UTF-8"&gt;</code>.</li><li><code class="inl">&lt;title&gt;</code> exacto: <b>Laboratorio Cero - Informe Final</b>.</li><li>Un único <code class="inl">&lt;h1&gt;</code>: <b>Contención total</b>.</li><li>Al menos dos <code class="inl">&lt;h2&gt;</code>.</li><li>Al menos tres párrafos; alguno con <code class="inl">&lt;strong&gt;</code> y alguno con <code class="inl">&lt;em&gt;</code>.</li><li>Una <code class="inl">&lt;ul&gt;</code> con al menos 3 <code class="inl">&lt;li&gt;</code>, y adentro de uno de esos li, una <code class="inl">&lt;ol&gt;</code> anidada con al menos 2 pasos.</li><li>Un enlace <code class="inl">https://</code> con <code class="inl">target="_blank"</code> y texto visible.</li><li>Una <code class="inl">&lt;img&gt;</code> con <code class="inl">src</code> y un <code class="inl">alt</code> de al menos 10 caracteres.</li><li>Tu firma en un comentario: <code class="inl">&lt;!-- agente: tu nombre --&gt;</code></li></ul>',
+inicial:'\x3C!-- Informe Final de Contención — sin red de seguridad --\x3E\n',
+archivo:'laboratorio-cero.html',
+checks:[
+['^\\s*<!doctype\\s+html\\s*>','Falta &lt;!DOCTYPE html&gt; en la primera línea'],
+['<html[^>]*\\blang\\s*=\\s*["\']es','Falta &lt;html lang="es"&gt;'],
+['<meta[^>]*charset','Falta &lt;meta charset="UTF-8"&gt;'],
+['<title\\s*>\\s*laboratorio\\s+cero\\s*[-—]\\s*informe\\s+final\\s*</title\\s*>','El &lt;title&gt; debe ser exactamente "Laboratorio Cero - Informe Final"'],
+['<h1[^>]*>[^<]*contenci[óo]n\\s+total[^<]*</h1\\s*>','Falta el &lt;h1&gt; "Contención total"'],
+['<h1[\\s>]','Debe haber exactamente UN &lt;h1&gt;',1,1],
+['<h2[^>]*>[^<]+</h2\\s*>','Se necesitan al menos DOS &lt;h2&gt; con texto',2],
+['<p[^>]*>[\\s\\S]*?</p\\s*>','Se necesitan al menos TRES párrafos',3],
+['<strong\\s*>[^<]+</strong\\s*>','Falta un &lt;strong&gt; con texto'],
+['<em\\s*>[^<]+</em\\s*>','Falta un &lt;em&gt; con texto'],
+['<ul[\\s>][\\s\\S]*?<li[\\s>][\\s\\S]*?<ol[\\s>][\\s\\S]*?<li[^>]*>[\\s\\S]*?</li\\s*>[\\s\\S]*?</ol\\s*>[\\s\\S]*?</ul\\s*>','Falta la lista anidada: una &lt;ol&gt; adentro de un &lt;li&gt; de la &lt;ul&gt;'],
+['<li[\\s>]','Se necesitan al menos 5 &lt;li&gt; en total (3 de la ul + 2 de la ol)',5],
+['<a[^>]*href\\s*=\\s*["\']https://[^"\']+["\'][^>]*target\\s*=\\s*["\']_blank["\'][^>]*>[^<]+</a\\s*>|<a[^>]*target\\s*=\\s*["\']_blank["\'][^>]*href\\s*=\\s*["\']https://[^"\']+["\'][^>]*>[^<]+</a\\s*>','Falta un enlace https:// con target="_blank" y texto visible'],
+['<img[^>]*\\bsrc\\s*=\\s*["\'][^"\']+["\'][^>]*\\balt\\s*=\\s*["\'][^"\']{10,}["\']|<img[^>]*\\balt\\s*=\\s*["\'][^"\']{10,}["\'][^>]*\\bsrc\\s*=\\s*["\'][^"\']+["\']','Falta &lt;img&gt; con src y un alt de 10+ caracteres'],
+['\\x3C!--\\s*agente\\s*:\\s*\\S[^>]*--\\x3E','Falta tu firma: \x3C!-- agente: tu nombre --\x3E', 1, Infinity, true]
+],
+exito:'CONTENCIÓN TOTAL. El Laboratorio Cero quedó esterilizado y el Marcado Necrótico fue erradicado de raíz.'
+}
+];
+
+/* ================= MAPA ================= */
+function pintarMapa(){
+  var g='', z=zonasHechas();
+  for(var i=0;i<NIVELES.length;i++){
+    var nv=NIVELES[i], cls='zona', est='';
+    if(nv.insano){
+      cls+=' insana';
+      if(insanoHecho()){ cls+=' completa'; est='✔ CONTENCIÓN TOTAL'; }
+      else if(z===6){ cls+=' disponible'; est='☣ SEÑAL ACTIVA — OPCIONAL'; }
+      else { cls+=' bloqueada'; est='▓▓ SEÑAL DESCONOCIDA ▓▓'; }
+    } else {
+      var hecho=!!(estado.mask&(1<<i));
+      var disp=(i===0)||!!(estado.mask&(1<<(i-1)));
+      if(hecho){ cls+=' completa'; est='✔ ZONA PURIFICADA'; }
+      else if(disp){ cls+=' disponible'; est='▶ ACCESO HABILITADO'; }
+      else { cls+=' bloqueada'; est='🔒 PURIFICÁ LA ZONA ANTERIOR'; }
+    }
+    g+='<div class="'+cls+'" data-idx="'+i+'">'+
+       '<div class="z-num">'+nv.num+' · +'+nv.xp+' XP</div>'+
+       '<h3>'+nv.titulo+'</h3>'+
+       '<div class="z-tema">'+esc(nv.tema)+'</div>'+
+       '<div class="z-estado">'+est+'</div></div>';
+  }
+  setHTML('gridZonas',g);
+  var pct=Math.round((z/6)*100);
+  $id('barraProg').style.width=pct+'%';
+  setHTML('txtProg','Contención: '+pct+'%'+(insanoHecho()?' · ☣ TOTAL':''));
+  var tarj=document.querySelectorAll('#gridZonas .zona');
+  for(var k=0;k<tarj.length;k++){
+    tarj[k].addEventListener('click',function(){
+      var idx=parseInt(this.getAttribute('data-idx'),10), nv=NIVELES[idx];
+      if(this.classList.contains('bloqueada')) return;
+      if(nv.insano && !insanoHecho()){ $id('veloInsano').classList.add('vis'); return; }
+      abrirNivel(idx);
+    });
+  }
+}
+
+/* ================= NIVEL ================= */
+function abrirNivel(idx){
+  nivelActual=idx;
+  var nv=NIVELES[idx];
+  setHTML('nvTitulo', nv.num+' · '+nv.titulo);
+  setHTML('nvXp','+'+nv.xp+' XP');
+  setHTML('nvLog', nv.log);
+  var t='<div class="teoria-caja abierta" id="teoriaCaja"><div class="teoria-cab" id="teoriaCab"><span class="ico">📖</span><span class="tit">EXPEDIENTE TÉCNICO</span><span class="flecha">▼</span></div><div class="teoria-cuerpo"><div class="teoria-inner"><div class="bloque-teoria">';
+  for(var i=0;i<nv.teoria.length;i++){
+    var b=nv.teoria[i];
+    if(b.h) t+='<h3>▸ '+esc(b.h)+'</h3>';
+    else if(b.p) t+='<p>'+b.p+'</p>';
+    else if(b.c) t+=bloqueCod(b.c);
+    else if(b.d) t+='<div class="destacado">'+b.d+'</div>';
+  }
+  t+='</div></div></div></div>';
+  setHTML('nvTeoria', t);
+  $id('teoriaCab').addEventListener('click',function(){
+    $id('teoriaCaja').classList.toggle('abierta');
+  });
+  setHTML('nvConsigna', nv.consigna);
+  setHTML('nvArchivo', esc(nv.archivo));
+  $id('edTxt').value = nv.inicial;
+  pintarEditor();
+  setHTML('nvChequeos','');
+  $id('nvChequeos').classList.remove('vis');
+  $id('pvMarco').classList.remove('vis');
+  $id('btnSigZona').style.display='none';
+  irA('pantNivel');
+}
+
+/* Editor con resaltado en vivo */
+function pintarEditor(){
+  $id('edHl').innerHTML = tokHTML($id('edTxt').value)+'\n';
+}
+enEl('edTxt','input',pintarEditor);
+enEl('edTxt','keydown',function(e){
+  if(e.key!=='Tab') return;
+  e.preventDefault();
+
+  var sangria='  ';
+  var inicio=this.selectionStart;
+  var fin=this.selectionEnd;
+  var codigo=this.value;
+
+  if(!e.shiftKey && inicio===fin){
+    this.value=codigo.slice(0,inicio)+sangria+codigo.slice(fin);
+    this.selectionStart=this.selectionEnd=inicio+sangria.length;
+  } else {
+    var inicioLinea=codigo.lastIndexOf('\n',inicio-1)+1;
+    var bloque=codigo.slice(inicioLinea,fin);
+
+    if(e.shiftKey){
+      var prefijo=codigo.slice(inicioLinea,inicio);
+      var bloqueNuevo=bloque.replace(/^(?: {1,2}|\t)/gm,'');
+      var prefijoNuevo=prefijo.replace(/^(?: {1,2}|\t)/gm,'');
+      this.value=codigo.slice(0,inicioLinea)+bloqueNuevo+codigo.slice(fin);
+      this.selectionStart=Math.max(inicioLinea,inicio-(prefijo.length-prefijoNuevo.length));
+      this.selectionEnd=fin-(bloque.length-bloqueNuevo.length);
+    } else {
+      var bloqueIndentado=sangria+bloque.replace(/\n/g,'\n'+sangria);
+      var lineas=(bloque.match(/\n/g)||[]).length+1;
+      this.value=codigo.slice(0,inicioLinea)+bloqueIndentado+codigo.slice(fin);
+      this.selectionStart=inicio+sangria.length;
+      this.selectionEnd=fin+(sangria.length*lineas);
+    }
+  }
+
+  pintarEditor();
+});
+enEl('edTxt','scroll',function(){
+  $id('edHl').scrollTop=this.scrollTop;
+  $id('edHl').scrollLeft=this.scrollLeft;
+});
+enEl('btnReiniciar','click',function(){
+  if(nivelActual<0) return;
+  $id('edTxt').value=NIVELES[nivelActual].inicial;
+  pintarEditor();
+});
+enEl('btnPreview','click',function(){
+  $id('pvFrame').srcdoc=$id('edTxt').value;
+  $id('pvMarco').classList.add('vis');
+});
+
+/* ================= VERIFICACIÓN ================= */
+function limpiarComentarios(c){ return c.replace(/\x3C!--[\s\S]*?--\x3E/g,''); }
+enEl('btnVerificar','click',function(){
+  if(nivelActual<0) return;
+  var nv=NIVELES[nivelActual];
+  var crudo=$id('edTxt').value;
+  var limpio=limpiarComentarios(crudo);
+  var html='', todoOk=true;
+  for(var i=0;i<nv.checks.length;i++){
+    var ck=nv.checks[i];
+    var min=(typeof ck[2]==='number')?ck[2]:1;
+    var max=(typeof ck[3]==='number')?ck[3]:Infinity;
+    var usaCrudo=!!ck[4];
+    var cant=0;
+    try{
+      var re=new RegExp(ck[0],'gi');
+      var base=usaCrudo?crudo:limpio;
+      var m=base.match(re);
+      cant=m?m.length:0;
+    }catch(e){ cant=0; }
+    var pasa=(cant>=min && cant<=max);
+    if(!pasa) todoOk=false;
+    html+='<div class="chk '+(pasa?'pasa':'falla')+'">'+(pasa?'✔ ':'✘ ')+ck[1]+
+          (max===1&&min===1?' <span style="opacity:.7">(encontrados: '+cant+')</span>':'')+'</div>';
+  }
+  setHTML('nvChequeos',html);
+  $id('nvChequeos').classList.add('vis');
+  $id('pvFrame').srcdoc=crudo;
+  $id('pvMarco').classList.add('vis');
+  if(todoOk){ ganarNivel(nv); }
+  else {
+    // contar intento fallido solo si la zona todavía no está superada
+    var yaHecho = nv.insano ? insanoHecho() : !!(estado.mask&(1<<nivelActual));
+    if(!yaHecho){
+      if(!estado.err) estado.err={};
+      estado.err[nv.id]=(estado.err[nv.id]||0)+1;
+      guardar(); refrescarHud();
+      var e=estado.err[nv.id];
+      if(e===LIMITE_ERRORES){
+        html+='<div class="chk falla" style="margin-top:6px">⚠ Llevás '+e+' intentos en esta zona. Un error más y la zona se penaliza (aportará la mitad de su XP a la nota).</div>';
+      } else if(e>LIMITE_ERRORES){
+        html+='<div class="chk falla" style="margin-top:6px">⚠ '+e+' intentos con error: esta zona quedará penalizada (media nota), pero podés completarla igual.</div>';
+      }
+      setHTML('nvChequeos',html);
+    }
+  }
+});
+
+function ganarNivel(nv){
+  var yaHecho = nv.insano ? insanoHecho() : !!(estado.mask&(1<<nivelActual));
+  estado.mask |= nv.insano ? 64 : (1<<nivelActual);
+  guardar(); refrescarHud();
+  if(nv.insano){
+    setHTML('codFinal', genCodigo(estado.mask));
+    $id('veloFinal').classList.add('vis');
+    return;
+  }
+  setHTML('msjExito', nv.exito+(yaHecho?'':' <b>+'+nv.xp+' XP.</b>')+
+    ' Tu código de contención actualizado es: <b style="font-family:\'Courier Prime\',monospace">'+genCodigo(estado.mask)+'</b>');
+  $id('veloExito').classList.add('vis');
+  $id('btnSigZona').style.display='inline-block';
+}
+
+enEl('btnExitoOk','click',function(){
+  $id('veloExito').classList.remove('vis');
+  if(zonasHechas()===6 && !insanoHecho()) $id('veloInsano').classList.add('vis');
+});
+enEl('btnSigZona','click',function(){
+  var sig=nivelActual+1;
+  if(sig<6){ abrirNivel(sig); } else { pintarMapa(); irA('pantMapa'); }
+});
+enEl('btnVolverMapa','click',function(){ pintarMapa(); irA('pantMapa'); });
+enEl('btnMapa','click',function(){ pintarMapa(); irA('pantMapa'); });
+
+/* Modal insano */
+enEl('btnAceptarInsano','click',function(){
+  $id('veloInsano').classList.remove('vis');
+  abrirNivel(NIVELES.length-1);
+});
+enEl('btnEvacuar','click',function(){
+  $id('veloInsano').classList.remove('vis');
+  pintarMapa(); irA('pantMapa');
+});
+enEl('btnFinalCerrar','click',function(){
+  $id('veloFinal').classList.remove('vis');
+  pintarMapa(); irA('pantMapa');
+});
+enEl('btnFinalOk','click',function(){
+  $id('veloFinal').classList.remove('vis');
+  generarPdf();
+  pintarMapa(); irA('pantMapa');
+});
+
+/* ================= INICIO / RESTAURAR ================= */
+enEl('btnComenzar','click',function(){
+  var n=$id('inNombre').value.trim();
+  if(n.length<3){ setHTML('msjNombre','⚠ Ingresá tu nombre y apellido para registrarte como agente.'); return; }
+  setHTML('msjNombre','');
+  estado.nombre=n; guardar(); refrescarHud();
+  pintarMapa(); irA('pantMapa');
+});
+enEl('btnRestaurar','click',function(){
+  var msj=$id('msjCodigo');
+  var n=$id('inNombre').value.trim();
+  if(n.length<3){ msj.className='msj-codigo err'; msj.innerHTML='⚠ Primero ingresá tu nombre en el registro de agente (arriba).'; return; }
+  var mask=leerCodigo($id('inCodigo').value);
+  if(mask<0){ msj.className='msj-codigo err'; msj.innerHTML='✘ Código inválido o corrupto. Verificalo en tu expediente PDF.'; return; }
+  estado.nombre=n; estado.mask=mask; guardar(); refrescarHud();
+  msj.className='msj-codigo ok';
+  msj.innerHTML='✔ Progreso restaurado: '+zonasHechas()+'/6 zonas'+(insanoHecho()?' + Laboratorio Cero':'')+'. Entrando al mapa…';
+  setTimeout(function(){ pintarMapa(); irA('pantMapa'); },900);
+});
+
+/* ================= PDF (jsPDF) ================= */
+function generarPdf(){
+  if(!window.jspdf || !window.jspdf.jsPDF){
+    alert('El motor PDF no cargó. Verificá tu conexión y recargá la página.');
+    return;
+  }
+  var doc=new window.jspdf.jsPDF({orientation:'p',unit:'mm',format:'a4'});
+  var W=210, y=0;
+  /* Cabecera */
+  doc.setFillColor(15,18,26); doc.rect(0,0,W,34,'F');
+  doc.setFillColor(220,38,38); doc.rect(0,34,W,2,'F');
+  doc.setFont('courier','bold'); doc.setTextColor(239,68,68);
+  doc.setFontSize(19); doc.text('EXPEDIENTE R.A.I.Z.',14,15);
+  doc.setTextColor(34,211,238); doc.setFontSize(10);
+  doc.text('UNIDAD DE CONTENCION SHANUKI · DW ENTREGA 1: HTML',14,23);
+  doc.setTextColor(134,239,110); doc.setFontSize(8);
+  doc.text('EVIDENCIA DE PROCESO · CIENCIAS DE LA COMPUTACION · CEIBAL',14,29);
+  /* Datos del agente */
+  y=48;
+  doc.setFont('courier','normal'); doc.setTextColor(30,38,54); doc.setFontSize(11);
+  var f=new Date();
+  var fecha=('0'+f.getDate()).slice(-2)+'/'+('0'+(f.getMonth()+1)).slice(-2)+'/'+f.getFullYear()+' '+('0'+f.getHours()).slice(-2)+':'+('0'+f.getMinutes()).slice(-2);
+  doc.setFont('courier','bold'); doc.text('AGENTE:',14,y);
+  doc.setFont('courier','normal'); doc.text(estado.nombre.toUpperCase(),46,y);
+  y+=8;
+  doc.setFont('courier','bold'); doc.text('FECHA:',14,y);
+  doc.setFont('courier','normal'); doc.text(fecha,46,y);
+  y+=8;
+  doc.setFont('courier','bold'); doc.text('ESTADO:',14,y);
+  doc.setFont('courier','normal');
+  var z=zonasHechas();
+  var estTxt = insanoHecho() ? 'CONTENCION TOTAL (ELITE)' : (z===6?'SERVIDOR ASEGURADO':(z===0?'MISION INICIADA':'CONTENCION EN CURSO'));
+  doc.text(estTxt+' · '+z+'/6 ZONAS'+(insanoHecho()?' + LAB CERO':''),46,y);
+
+  /* Caja de calificación: nota de libreta */
+  y+=10;
+  var nota=notaLibreta(), xpEf=xpEfectivo();
+  doc.setFillColor(15,18,26); doc.setDrawColor(34,211,238);
+  doc.roundedRect(14,y,W-28,26,3,3,'FD');
+  doc.setFont('courier','bold'); doc.setTextColor(34,211,238); doc.setFontSize(11);
+  doc.text('CALIFICACION (ESCALA LIBRETA)',20,y+9);
+  doc.setFontSize(22); doc.setTextColor(134,239,110);
+  doc.text(nota.toFixed(1).replace(/\.0$/,'')+' / 10',20,y+20);
+  doc.setFont('courier','normal'); doc.setFontSize(8); doc.setTextColor(180,190,210);
+  doc.text('Equivalencia: '+xpEf+' / '+XP_MAX+' XP efectivo  ·  '+xpTotal()+' XP ganado',70,y+13);
+  var penN=zonasPenalizadas();
+  doc.text(penN>0 ? ('Penalizacion: '+penN+' zona(s) a media nota por +'+LIMITE_ERRORES+' intentos') : 'Sin penalizaciones por intentos', 70, y+19);
+
+  /* Zonas */
+  y+=34;
+  doc.setDrawColor(200,208,222); doc.line(14,y,W-14,y); y+=9;
+  doc.setFont('courier','bold'); doc.setFontSize(11); doc.setTextColor(30,38,54); doc.text('REGISTRO DE ZONAS · INTENTOS · PUNTOS',14,y); y+=8;
+  doc.setFontSize(9);
+  for(var i=0;i<NIVELES.length;i++){
+    var nv=NIVELES[i];
+    var hecho = nv.insano ? insanoHecho() : !!(estado.mask&(1<<i));
+    var err = estado.err[nv.id]||0;
+    var penal = zonaPenalizada(nv.id);
+    var xpBase = nv.insano?350:100;
+    var xpZona = hecho ? (penal? xpBase/2 : xpBase) : 0;
+    if(hecho){ doc.setTextColor(penal?161:21, penal?98:128, penal?7:61); } else { doc.setTextColor(150,158,175); }
+    doc.setFont('courier','bold');
+    doc.text(hecho?'[X]':'[ ]',14,y);
+    doc.setFont('courier','normal');
+    doc.text(nv.num+' - '+nv.titulo,26,y,{maxWidth:110});
+    doc.text('int:'+err,150,y);
+    doc.text(xpZona+(penal?'*':'')+' XP',172,y);
+    y+=6.5;
+  }
+  doc.setFontSize(7); doc.setTextColor(120,132,155);
+  doc.text('* zona penalizada: aporta la mitad de su XP por superar los '+LIMITE_ERRORES+' intentos con error.',14,y); y+=2;
+  /* Codigo de contencion */
+  y+=6;
+  doc.setTextColor(30,38,54);
+  doc.setFillColor(255,251,235); doc.setDrawColor(202,138,4);
+  doc.roundedRect(14,y,W-28,30,3,3,'FD');
+  doc.setFont('courier','bold'); doc.setFontSize(11);
+  doc.text('CODIGO DE CONTENCION (clave de progreso)',20,y+9);
+  doc.setFontSize(20); doc.setTextColor(161,98,7);
+  doc.text(genCodigo(estado.mask),20,y+21);
+  doc.setFontSize(8); doc.setTextColor(80,92,115); doc.setFont('courier','normal');
+  doc.text('Ingresalo en la pantalla de inicio para desbloquear tu avance en cualquier maquina.',20,y+27);
+  /* Pie */
+  doc.setFontSize(8); doc.setTextColor(120,132,155);
+  doc.text('<shanuki DW/> · Expediente R.A.I.Z. · Documento generado por el estudiante como evidencia de proceso.',14,285);
+  var nombreArch='expediente-raiz-'+estado.nombre.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'')+'.pdf';
+  doc.save(nombreArch);
+}
+enEl('btnPdf','click',generarPdf);
+
+/* ================= ARRANQUE ================= */
+cargar();
+if(estado.nombre) $id('inNombre').value=estado.nombre;
+refrescarHud();
+if(estado.nombre){
+  pintarMapa();
+  irA('pantMapa');
+} else {
+  irA('pantInicio');
+}
+})();
+</script>
+
+
+</body></html>
